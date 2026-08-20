@@ -4,6 +4,7 @@ import { RefreshCw, Gift } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import MadhumaltiBloom from './components/MadhumaltiBloom';
 import SurpriseScreen from './components/SurpriseScreen';
+import PetalShower from './components/PetalShower';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('surprise'); // 'surprise' | 'bloom'
@@ -56,6 +57,9 @@ export default function App() {
         transition={{ type: 'spring', damping: 25, stiffness: 250, mass: 0.1 }}
       />
 
+      {/* Automatic Delicate Petal Shower Overlay */}
+      <PetalShower isActive={currentScreen === 'bloom'} />
+
       <AnimatePresence mode="wait">
         {currentScreen === 'surprise' ? (
           <SurpriseScreen
@@ -65,7 +69,7 @@ export default function App() {
         ) : (
           <motion.div
             key="bloom-screen"
-            className="w-full h-full flex flex-col items-center justify-center relative"
+            className="bloom-screen-container"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}

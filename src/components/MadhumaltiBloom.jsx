@@ -333,7 +333,7 @@ export default function MadhumaltiBloom({ refreshKey }) {
         animate={{ opacity: 0.85, y: 0 }}
         transition={{ duration: 1, delay: 1.5 }}
       >
-      Touch any flower to make it sparkle 
+        Touch any flower to make it sparkle 
       </motion.p>
 
       <div className="swaying-container">
