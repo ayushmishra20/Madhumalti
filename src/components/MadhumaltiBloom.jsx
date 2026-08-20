@@ -4,9 +4,71 @@ import confetti from 'canvas-confetti';
 
 /**
  * Interactive Photorealistic Madhumalti Flower Component
- * Features Touch & Hover Reactivity:
- * - Hovering/clicking any blossom triggers a springy scale bounce, golden radial aura glow, and localized pollen sparkle burst!
+ * Features Touch & Hover Reactivity + Animated Fluttering Butterfly & Glowing Fireflies!
  */
+
+// Animated Glowing Butterfly Component
+const AnimatedButterfly = ({ delay = 0 }) => {
+  return (
+    <motion.g
+      initial={{ x: 100, y: 350, opacity: 0 }}
+      animate={{
+        x: [100, 180, 290, 360, 240, 140, 100],
+        y: [350, 220, 180, 300, 420, 360, 350],
+        rotate: [0, -15, 20, 10, -25, 15, 0],
+        opacity: [0, 1, 1, 1, 0.9, 1, 0]
+      }}
+      transition={{
+        duration: 16,
+        delay: delay,
+        repeat: Infinity,
+        ease: 'easeInOut'
+      }}
+      style={{ filter: 'drop-shadow(0 0 10px rgba(244, 114, 182, 0.9))' }}
+    >
+      <g transform="scale(0.55)">
+        {/* Left Wing */}
+        <motion.path
+          d="M 0 0 C -25 -25 -40 -15 -35 10 C -30 30 -10 20 0 0 Z"
+          fill="url(#butterflyWingGrad)"
+          animate={{ scaleX: [1, 0.3, 1] }}
+          transition={{ duration: 0.35, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ transformOrigin: '0px 0px' }}
+        />
+        {/* Right Wing */}
+        <motion.path
+          d="M 0 0 C 25 -25 40 -15 35 10 C 30 30 10 20 0 0 Z"
+          fill="url(#butterflyWingGrad)"
+          animate={{ scaleX: [1, 0.3, 1] }}
+          transition={{ duration: 0.35, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ transformOrigin: '0px 0px' }}
+        />
+        {/* Lower Left Wing */}
+        <motion.path
+          d="M 0 0 C -20 10 -30 30 -15 38 C 0 40 -5 15 0 0 Z"
+          fill="url(#butterflyLowerGrad)"
+          animate={{ scaleX: [1, 0.3, 1] }}
+          transition={{ duration: 0.35, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ transformOrigin: '0px 0px' }}
+        />
+        {/* Lower Right Wing */}
+        <motion.path
+          d="M 0 0 C 20 10 30 30 15 38 C 0 40 5 15 0 0 Z"
+          fill="url(#butterflyLowerGrad)"
+          animate={{ scaleX: [1, 0.3, 1] }}
+          transition={{ duration: 0.35, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ transformOrigin: '0px 0px' }}
+        />
+        {/* Body & Antenna */}
+        <ellipse cx="0" cy="8" rx="2.5" ry="12" fill="#f8fafc" />
+        <path d="M -1 -2 Q -8 -15 -12 -18" stroke="#fef08a" strokeWidth="1.2" fill="none" />
+        <path d="M 1 -2 Q 8 -15 12 -18" stroke="#fef08a" strokeWidth="1.2" fill="none" />
+        <circle cx="-13" cy="-19" r="1.5" fill="#fef08a" />
+        <circle cx="13" cy="-19" r="1.5" fill="#fef08a" />
+      </g>
+    </motion.g>
+  );
+};
 
 // Interactive Flower Component
 const Flower = ({ x, y, scale = 1, rotation = 0, stage = 'pink', delay = 0, isKey = false }) => {
@@ -57,7 +119,6 @@ const Flower = ({ x, y, scale = 1, rotation = 0, stage = 'pink', delay = 0, isKe
     e.stopPropagation();
     setIsClicked(true);
 
-    // Calculate normalized screen coordinates for localized sparkle burst
     const svgEl = e.currentTarget.ownerSVGElement;
     if (svgEl) {
       const rect = svgEl.getBoundingClientRect();
@@ -242,6 +303,17 @@ export default function MadhumaltiBloom({ refreshKey }) {
     }));
   }, [refreshKey]);
 
+  const fireflies = useMemo(() => {
+    return Array.from({ length: 14 }).map((_, i) => ({
+      id: i,
+      startX: 80 + Math.random() * 360,
+      startY: 120 + Math.random() * 500,
+      r: 2 + Math.random() * 2.5,
+      delay: i * 0.3,
+      duration: 5 + Math.random() * 4
+    }));
+  }, [refreshKey]);
+
   const fallingPetals = useMemo(() => {
     return Array.from({ length: 8 }).map((_, i) => ({
       id: i,
@@ -258,10 +330,10 @@ export default function MadhumaltiBloom({ refreshKey }) {
       <motion.p
         className="touch-hint-text"
         initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 0.8, y: 0 }}
+        animate={{ opacity: 0.85, y: 0 }}
         transition={{ duration: 1, delay: 1.5 }}
       >
-        Touch any flower to make it sparkle 
+      Touch any flower to make it sparkle 
       </motion.p>
 
       <div className="swaying-container">
@@ -272,6 +344,17 @@ export default function MadhumaltiBloom({ refreshKey }) {
           style={{ filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.65))' }}
         >
           <defs>
+            <linearGradient id="butterflyWingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fef08a" />
+              <stop offset="50%" stopColor="#f472b6" />
+              <stop offset="100%" stopColor="#e11d48" />
+            </linearGradient>
+
+            <linearGradient id="butterflyLowerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f472b6" />
+              <stop offset="100%" stopColor="#be123c" />
+            </linearGradient>
+
             <linearGradient id="petalWhiteGrad" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#ffffff" />
               <stop offset="70%" stopColor="#fff0f5" />
@@ -528,6 +611,53 @@ export default function MadhumaltiBloom({ refreshKey }) {
             <Flower x={235} y={600} scale={0.7} rotation={-10} stage="white" delay={1.28} />
             <Flower x={265} y={635} scale={0.65} rotation={10} stage="pink" delay={1.32} />
             <Flower x={240} y={670} scale={0.6} rotation={-5} stage="white" delay={1.35} />
+          </g>
+
+          {/* ================= ANIMATED FLUTTERING BUTTERFLY ================= */}
+          <g id="animated-butterfly">
+            <AnimatedButterfly delay={1.2} />
+          </g>
+
+          {/* ================= FLOATING FIREFLIES ================= */}
+          <g id="fireflies">
+            {fireflies.map((ff) => (
+              <g key={ff.id}>
+                <motion.circle
+                  cx={ff.startX}
+                  cy={ff.startY}
+                  r={ff.r * 2.5}
+                  fill="rgba(254, 240, 138, 0.4)"
+                  filter="blur(4px)"
+                  animate={{
+                    opacity: [0.2, 0.8, 0.2],
+                    scale: [0.8, 1.3, 0.8]
+                  }}
+                  transition={{
+                    duration: ff.duration * 0.6,
+                    repeat: Infinity,
+                    ease: 'easeInOut'
+                  }}
+                />
+                <motion.circle
+                  cx={ff.startX}
+                  cy={ff.startY}
+                  r={ff.r}
+                  fill="#fef08a"
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    x: [0, (ff.id % 2 === 0 ? 30 : -30), (ff.id % 3 === 0 ? -20 : 25), 0],
+                    y: [0, -40, 20, 0],
+                    opacity: [0.3, 1, 0.4, 0.8, 0.3]
+                  }}
+                  transition={{
+                    duration: ff.duration,
+                    delay: ff.delay,
+                    repeat: Infinity,
+                    ease: 'easeInOut'
+                  }}
+                />
+              </g>
+            ))}
           </g>
 
           {/* ================= FALLING PETALS ================= */}

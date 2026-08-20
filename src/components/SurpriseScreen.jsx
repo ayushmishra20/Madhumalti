@@ -67,7 +67,7 @@ export default function SurpriseScreen({ onOpenSurprise }) {
             margin: '0.8rem 0'
           }}
         >
-          For you Akanksha
+          For you 
         </motion.h1>
 
         {/* Open Surprise Action Button */}
