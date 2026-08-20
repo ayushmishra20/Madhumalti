@@ -122,16 +122,6 @@ html, body {
   filter: drop-shadow(0 0 10px rgba(244, 114, 182, 0.8));
 }
 
-.surprise-title {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  color: #f472b6;
-  text-transform: uppercase;
-  text-shadow: 0 0 12px rgba(244, 114, 182, 0.4);
-}
-
 .surprise-subtitle-hindi {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.4rem;
@@ -140,14 +130,6 @@ html, body {
   line-height: 1.4;
   font-style: italic;
   text-shadow: 0 0 15px rgba(244, 114, 182, 0.35);
-}
-
-.surprise-subtitle-roman {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.82rem;
-  font-weight: 400;
-  color: #94a3b8;
-  letter-spacing: 0.05em;
 }
 
 .surprise-open-btn {
@@ -180,52 +162,19 @@ html, body {
     inset 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
-/* Top Left Shayari Section */
-.status-side-panel {
+/* Touch Hint Text above Flowers */
+.touch-hint-text {
   position: absolute;
-  left: 3vw;
-  top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  max-width: 320px;
-  z-index: 10;
-}
-
-.status-title {
+  top: 1rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
   color: #f472b6;
   text-transform: uppercase;
-  text-shadow: 0 0 10px rgba(244, 114, 182, 0.4);
-}
-
-.shayari-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.shayari-hindi {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #f8fafc;
-  line-height: 1.5;
-  font-style: italic;
-  text-shadow: 0 0 12px rgba(244, 114, 182, 0.35);
-}
-
-.shayari-roman {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: #d1d5db;
-  line-height: 1.4;
-  font-style: italic;
-  opacity: 0.85;
+  text-shadow: 0 0 12px rgba(244, 114, 182, 0.5);
+  pointer-events: none;
+  z-index: 10;
 }
 
 /* Top Controls Bar */
@@ -291,6 +240,7 @@ html, body {
   height: calc(100vh - 100px);
   max-height: 800px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 5;
@@ -367,12 +317,6 @@ html, body {
 
 /* Fully Responsive Breakpoints */
 @media (max-width: 900px) {
-  .status-side-panel {
-    position: static;
-    text-align: center;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
   .controls-bar {
     position: static;
     margin-bottom: 1rem;
@@ -391,16 +335,6 @@ html, body {
 }
 
 @media (max-width: 480px) {
-  .status-title {
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-  }
-  .shayari-hindi {
-    font-size: 0.92rem;
-  }
-  .shayari-roman {
-    font-size: 0.8rem;
-  }
   .refresh-btn {
     padding: 0.45rem 0.85rem;
     font-size: 0.65rem;
@@ -412,7 +346,7 @@ html, body {
   .surprise-card {
     padding: 2rem 1.25rem;
   }
-  .surprise-subtitle-hindi {
-    font-size: 1.15rem;
+  .touch-hint-text {
+    font-size: 0.65rem;
   }
 }

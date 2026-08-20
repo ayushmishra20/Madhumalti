@@ -1,17 +1,18 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import confetti from 'canvas-confetti';
 
 /**
- * Photorealistic Madhumalti Bloom Component
- * Matches the reference image:
- * - Radiating long green pedicels with white & pink buds at the top crown
- * - Thick upper cluster of 5-petaled Madhumalti star blossoms in white -> pink -> crimson red
- * - Woven overlay with "MADHUMALTI BLOOM" typography
- * - Lower cascading vine tapering into green leaves & delicate dangling white/pink star flowers
- * - Swirling green and magenta magic light trails
+ * Interactive Photorealistic Madhumalti Flower Component
+ * Features Touch & Hover Reactivity:
+ * - Hovering/clicking any blossom triggers a springy scale bounce, golden radial aura glow, and localized pollen sparkle burst!
  */
 
+// Interactive Flower Component
 const Flower = ({ x, y, scale = 1, rotation = 0, stage = 'pink', delay = 0, isKey = false }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+
   const palettes = {
     white: {
       petalMain: 'url(#petalWhiteGrad)',
@@ -52,28 +53,61 @@ const Flower = ({ x, y, scale = 1, rotation = 0, stage = 'pink', delay = 0, isKe
 
   const palette = palettes[stage] || palettes.pink;
 
+  const handleClick = (e) => {
+    e.stopPropagation();
+    setIsClicked(true);
+
+    // Calculate normalized screen coordinates for localized sparkle burst
+    const svgEl = e.currentTarget.ownerSVGElement;
+    if (svgEl) {
+      const rect = svgEl.getBoundingClientRect();
+      const normX = (e.clientX - rect.left) / rect.width;
+      const normY = (e.clientY - rect.top) / rect.height;
+
+      confetti({
+        particleCount: 15,
+        spread: 45,
+        origin: { x: normX, y: normY },
+        colors: ['#fef08a', '#f472b6', '#ffffff', '#86efac'],
+        shapes: ['star', 'circle'],
+        scalar: 0.65,
+        ticks: 80,
+        gravity: 0.7,
+        disableForReducedMotion: true
+      });
+    }
+
+    setTimeout(() => setIsClicked(false), 600);
+  };
+
   return (
-    <g transform={`translate(${x}, ${y}) scale(${scale})`}>
+    <g 
+      transform={`translate(${x}, ${y}) scale(${scale})`}
+      className="cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
+    >
       <motion.g
         initial={{ scale: 0, rotate: rotation - 45, opacity: 0 }}
         animate={{ 
-          scale: [0, 1.22, 1], 
-          rotate: rotation, 
+          scale: isClicked ? [1.4, 1.1] : isHovered ? 1.25 : 1, 
+          rotate: isClicked ? rotation + 25 : isHovered ? rotation + 10 : rotation, 
           opacity: 1 
         }}
         transition={{
-          duration: 1.25,
-          delay: delay,
+          duration: isClicked || isHovered ? 0.35 : 1.25,
+          delay: isClicked || isHovered ? 0 : delay,
           ease: [0.34, 1.56, 0.64, 1]
         }}
       >
         {/* Soft Radial Ambient Glow */}
-        {isKey && (
+        {(isKey || isHovered || isClicked) && (
           <circle 
             cx="0" 
             cy="0" 
-            r="46" 
-            fill="rgba(244, 114, 182, 0.4)" 
+            r={isClicked ? "55" : "46"} 
+            fill={isClicked ? "rgba(254, 240, 138, 0.7)" : isHovered ? "rgba(244, 114, 182, 0.6)" : "rgba(244, 114, 182, 0.4)"} 
             filter="blur(14px)" 
           />
         )}
@@ -127,7 +161,7 @@ const Flower = ({ x, y, scale = 1, rotation = 0, stage = 'pink', delay = 0, isKe
   );
 };
 
-// Pedicel + Bud Component radiating at top crown
+// Pedicel + Bud Component
 const TopPedicelBud = ({ x1, y1, x2, y2, color = '#f472b6', delay = 0 }) => (
   <g>
     <motion.line
@@ -156,30 +190,44 @@ const TopPedicelBud = ({ x1, y1, x2, y2, color = '#f472b6', delay = 0 }) => (
   </g>
 );
 
-// Botanical Leaf Component
-const Leaf = ({ x, y, scale = 1, rotation = 0, delay = 0 }) => (
-  <g transform={`translate(${x}, ${y}) scale(${scale})`}>
-    <motion.g
-      initial={{ scale: 0, rotate: rotation - 30, opacity: 0 }}
-      animate={{ scale: [0, 1.18, 1], rotate: rotation, opacity: 1 }}
-      transition={{ duration: 1, delay: delay, ease: 'easeOut' }}
+// Botanical Leaf Component with Touch Reactivity
+const Leaf = ({ x, y, scale = 1, rotation = 0, delay = 0 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <g 
+      transform={`translate(${x}, ${y}) scale(${scale})`}
+      className="cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <path
-        d="M 0 0 C -20 -22 -24 -50 0 -70 C 24 -50 20 -22 0 0 Z"
-        fill="#000000"
-        opacity="0.25"
-        transform="translate(2, 4)"
-      />
-      <path
-        d="M 0 0 C -18 -20 -22 -46 0 -66 C 22 -46 18 -20 0 0 Z"
-        fill="url(#realLeafGrad)"
-      />
-      <path d="M 0 0 L 0 -64" stroke="#86efac" strokeWidth="1.4" opacity="0.7" strokeLinecap="round" />
-      <path d="M 0 -16 L -10 -26 M 0 -30 L -11 -40 M 0 -46 L -7 -54" stroke="#86efac" strokeWidth="0.9" opacity="0.45" />
-      <path d="M 0 -16 L 10 -26 M 0 -30 L 11 -40 M 0 -46 L 7 -54" stroke="#86efac" strokeWidth="0.9" opacity="0.45" />
-    </motion.g>
-  </g>
-);
+      <motion.g
+        initial={{ scale: 0, rotate: rotation - 30, opacity: 0 }}
+        animate={{ 
+          scale: isHovered ? 1.2 : 1, 
+          rotate: isHovered ? rotation + 12 : rotation, 
+          opacity: 1 
+        }}
+        transition={{ duration: isHovered ? 0.3 : 1, delay: isHovered ? 0 : delay, ease: 'easeOut' }}
+      >
+        <path
+          d="M 0 0 C -20 -22 -24 -50 0 -70 C 24 -50 20 -22 0 0 Z"
+          fill={isHovered ? "rgba(134, 239, 172, 0.3)" : "#000000"}
+          opacity={isHovered ? "0.8" : "0.25"}
+          transform="translate(2, 4)"
+          filter={isHovered ? "blur(6px)" : "none"}
+        />
+        <path
+          d="M 0 0 C -18 -20 -22 -46 0 -66 C 22 -46 18 -20 0 0 Z"
+          fill="url(#realLeafGrad)"
+        />
+        <path d="M 0 0 L 0 -64" stroke="#86efac" strokeWidth="1.4" opacity="0.7" strokeLinecap="round" />
+        <path d="M 0 -16 L -10 -26 M 0 -30 L -11 -40 M 0 -46 L -7 -54" stroke="#86efac" strokeWidth="0.9" opacity="0.45" />
+        <path d="M 0 -16 L 10 -26 M 0 -30 L 11 -40 M 0 -46 L 7 -54" stroke="#86efac" strokeWidth="0.9" opacity="0.45" />
+      </motion.g>
+    </g>
+  );
+};
 
 export default function MadhumaltiBloom({ refreshKey }) {
   const sparkles = useMemo(() => {
@@ -206,6 +254,16 @@ export default function MadhumaltiBloom({ refreshKey }) {
 
   return (
     <div className="bloom-stage" key={refreshKey}>
+      {/* Subtle Hint Text */}
+      <motion.p
+        className="touch-hint-text"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 0.8, y: 0 }}
+        transition={{ duration: 1, delay: 1.5 }}
+      >
+        Touch any flower to make it sparkle 
+      </motion.p>
+
       <div className="swaying-container">
         <svg
           viewBox="0 0 520 760"
@@ -420,18 +478,15 @@ export default function MadhumaltiBloom({ refreshKey }) {
 
           {/* ================= THICK UPRIGHT TOP DOME BLOOMS ================= */}
           <g id="top-dense-flowers">
-            {/* Top-Left White Blossoms */}
             <Flower x={200} y={160} scale={0.75} rotation={-20} stage="white" delay={0.35} />
             <Flower x={170} y={185} scale={0.8} rotation={-35} stage="white" delay={0.4} />
             <Flower x={230} y={170} scale={0.8} rotation={-10} stage="white" delay={0.42} />
 
-            {/* Top-Middle & Top-Right Pink & Crimson Blossoms */}
             <Flower x={270} y={160} scale={0.85} rotation={10} stage="lightPink" delay={0.45} />
             <Flower x={310} y={170} scale={0.85} rotation={25} stage="pink" delay={0.48} />
             <Flower x={350} y={185} scale={0.85} rotation={40} stage="crimson" delay={0.5} />
             <Flower x={385} y={205} scale={0.8} rotation={55} stage="deepRed" delay={0.52} />
 
-            {/* Dense Upper Core (Thick Mass) */}
             <Flower x={210} y={215} scale={0.95} rotation={-25} stage="white" delay={0.55} isKey />
             <Flower x={250} y={205} scale={1.0} rotation={-5} stage="lightPink" delay={0.58} isKey />
             <Flower x={295} y={210} scale={1.0} rotation={15} stage="pink" delay={0.6} isKey />
@@ -449,7 +504,6 @@ export default function MadhumaltiBloom({ refreshKey }) {
             <Flower x={300} y={290} scale={1.15} rotation={12} stage="deepRed" delay={0.85} isKey />
             <Flower x={345} y={305} scale={0.95} rotation={35} stage="crimson" delay={0.88} />
 
-            {/* Dense Center Section overlapping Title Typography */}
             <Flower x={225} y={325} scale={1.1} rotation={-18} stage="deepRed" delay={0.9} isKey />
             <Flower x={275} y={330} scale={1.2} rotation={8} stage="crimson" delay={0.92} isKey />
             <Flower x={320} y={345} scale={1.0} rotation={28} stage="pink" delay={0.95} isKey />
