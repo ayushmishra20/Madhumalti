@@ -2,18 +2,22 @@ import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 export default function PetalShower({ isActive }) {
-  // Reduced density to 20 delicate cascading petals for maximum aesthetic elegance
+  // Ultra-lightweight particle count (8 petals) using pure CSS rounded shapes for 60fps on old phones
   const petals = useMemo(() => {
-    return Array.from({ length: 20 }).map((_, i) => {
-      const colors = ['#ffffff', '#fce7f3', '#f472b6', '#fb7185', '#e11d48', '#be123c'];
+    return Array.from({ length: 8 }).map((_, i) => {
+      const colors = [
+        'linear-gradient(135deg, #ffffff, #fce7f3)',
+        'linear-gradient(135deg, #f472b6, #fb7185)',
+        'linear-gradient(135deg, #e11d48, #be123c)'
+      ];
       return {
         id: i,
-        left: Math.random() * 96 + 2, // percentage across screen
-        scale: 0.45 + Math.random() * 0.5,
-        color: colors[i % colors.length],
-        duration: 4.5 + Math.random() * 4,
-        delay: Math.random() * 3.5,
-        drift: (Math.random() - 0.5) * 90, // subtle horizontal sway
+        left: Math.random() * 92 + 4,
+        size: 10 + Math.random() * 8,
+        bg: colors[i % colors.length],
+        duration: 5 + Math.random() * 3,
+        delay: Math.random() * 2.5,
+        drift: (Math.random() - 0.5) * 60,
         rotate: Math.random() * 360
       };
     });
@@ -26,16 +30,24 @@ export default function PetalShower({ isActive }) {
       {petals.map((pt) => (
         <motion.div
           key={pt.id}
-          className="shower-petal"
+          className="shower-petal-css"
           style={{
             left: `${pt.left}%`,
-            top: `-40px`,
-            position: 'absolute'
+            top: `-25px`,
+            width: `${pt.size}px`,
+            height: `${pt.size * 1.5}px`,
+            background: pt.bg,
+            position: 'absolute',
+            borderRadius: '50% 0 50% 50%',
+            opacity: 0.8,
+            boxShadow: '0 0 6px rgba(244, 114, 182, 0.4)',
+            willChange: 'transform',
+            transform: 'translateZ(0)'
           }}
-          initial={{ y: -50, x: 0, opacity: 0, rotate: 0 }}
+          initial={{ y: -30, x: 0, opacity: 0, rotate: 0 }}
           animate={{
-            y: ['0vh', '110vh'],
-            x: [0, pt.drift, pt.drift * -0.5, pt.drift * 0.8],
+            y: ['0vh', '105vh'],
+            x: [0, pt.drift, pt.drift * -0.4],
             rotate: [pt.rotate, pt.rotate + 360],
             opacity: [0, 0.85, 0.85, 0]
           }}
@@ -45,21 +57,7 @@ export default function PetalShower({ isActive }) {
             repeat: Infinity,
             ease: 'linear'
           }}
-        >
-          <svg
-            width={20 * pt.scale}
-            height={28 * pt.scale}
-            viewBox="0 0 24 32"
-            fill="none"
-          >
-            <path
-              d="M 12 0 C 4 10 0 20 12 32 C 24 20 20 10 12 0 Z"
-              fill={pt.color}
-              opacity="0.8"
-              style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.35))' }}
-            />
-          </svg>
-        </motion.div>
+        />
       ))}
     </div>
   );

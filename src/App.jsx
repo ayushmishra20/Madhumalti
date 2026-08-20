@@ -116,6 +116,16 @@ export default function App() {
 
             {/* Fullscreen Responsive Blooming Stage */}
             <MadhumaltiBloom refreshKey={refreshKey} />
+
+            {/* Clean Unboxed Aesthetic Footer Message */}
+            <motion.footer
+              className="romantic-footer-banner"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 1.5 }}
+            >
+              <p className="footer-roman">Kaisa laga? Pasand aaya? </p>
+            </motion.footer>
           </motion.div>
         )}
       </AnimatePresence>
